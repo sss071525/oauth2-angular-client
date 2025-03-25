@@ -1,15 +1,1 @@
-<h1>Angular OAuth2 Login</h1>
-<button (click)="login()">Login with OAuth2</button>
-<button (click)="logout()">Logout</button>
-
-<p *ngIf="accessToken">Access Token: {{ accessToken }}</p>
-
-
-
-
-<h1>Login</h1>
-<form (submit)="login()">
-  <label>Username: <input type="text" [(ngModel)]="username"  [ngModelOptions]="{standalone: true}"></label><br>
-  <label>Password: <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"></label><br>
-  <button type="submit">Login</button>
-</form>
+<router-outlet></router-outlet>

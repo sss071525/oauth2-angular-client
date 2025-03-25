@@ -1,0 +1,48 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>Welcome Back!</h1>
+
+    <!-- Error message banner -->
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="login()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <div class="divider">OR</div>
+    <button class="btn btn-oauth" (click)="loginWithOAuth2()">Login with OAuth2</button>
+  </div>
+
+  <!-- Modal Loader -->
+  <div *ngIf="isLoading" class="modal-overlay">
+    <div class="modal-loader">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Please wait...</p>
+    </div>
+  </div>
+</div>

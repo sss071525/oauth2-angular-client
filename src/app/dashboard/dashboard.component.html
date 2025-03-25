@@ -1,0 +1,10 @@
+<div class="dashboard-container">
+    <h1>Welcome to the Dashboard</h1>
+    <div *ngIf="userData">
+      <p><strong>Access Token:</strong> {{ userData?.access_token}}</p>
+      <p><strong>Refresh Token:</strong> {{ userData?.refresh_token }}</p>
+      <p><strong>Expires In:</strong> {{ userData?.expires_in }}</p>
+      <!-- Add more fields as needed -->
+    </div>
+    <button (click)="logout()">Logout</button>
+  </div>
