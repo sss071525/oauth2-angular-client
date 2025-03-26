@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AuthService {
   private authServerUrl = 'http://localhost:8080'; // Spring Authorization Server
+  private logoutUrl = this.authServerUrl+'/logout'; // Spring Logout URL
   private loginApiUrl = 'http://localhost:8080/oauth2/login'; //
   private redirectUri = 'http://localhost:4200/callback';
   private tokenEndpoint = 'http://localhost:8080/oauth2/token'; // Replace with your token endpoint
@@ -53,10 +54,22 @@ export class AuthService {
   }
 
   // ✅ Logout User
-  logout() {
-    localStorage.removeItem('userData');
-    this.router.navigate(['/login']);
+    logout(): void {
+    // Call Spring's logout endpoint
+    this.http.post(this.logoutUrl, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        // Optionally clear local storage or tokens
+        localStorage.clear();
+        sessionStorage.clear();
+        // Redirect to login or home
+        this.router.navigate(['/login']);
+      },
+      error: err => {
+        console.error('Logout failed:', err);
+      }
+    });
   }
+  
 
   // ✅ Check if User is Logged In
   isAuthenticated(): boolean {
@@ -75,7 +88,9 @@ export class AuthService {
       .set('client_id', this.clientId)
       .set('redirect_uri', this.redirectUri)
       .set('code', code)
-      .set('code_verifier', codeVerifier);
+      .set('code_verifier', codeVerifier)
+      .set('device_location', 'Hyderabad')
+      .set('device_id', 'Sravan HP Laptop'); // 👈 custom param
     this.http.post<any>(this.tokenEndpoint, body.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).subscribe({
