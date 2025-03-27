@@ -49,7 +49,7 @@ export class AuthService {
       .set('redirect_uri', this.redirectUri)
       .set('code_challenge', codeChallenge)
       .set('code_challenge_method', 'S256')
-      .set('scope', 'openid profile email') 
+      .set('scope', 'read') 
     const authUrl = `${this.authorizationEndpoint}?${params.toString()}`;
     window.location.href = authUrl; // Redirect to the authorization server
   }

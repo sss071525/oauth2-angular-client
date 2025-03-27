@@ -1,0 +1,43 @@
+.active-session {
+    background-color: green;
+    font-weight: bold;
+  }
+  
+
+  .device-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .device-table th,
+  .device-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+  }
+  
+  .device-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  .device-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .device-table .active-session {
+    background-color: #e0f7e9 !important;
+    font-weight: 500;
+  }
+  
+  .browser-icon {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  

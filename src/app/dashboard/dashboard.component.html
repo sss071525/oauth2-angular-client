@@ -7,4 +7,45 @@
       <!-- Add more fields as needed -->
     </div>
     <button (click)="logout()">Logout</button>
+
+    <h2>Active Devices</h2>
+
+
+    <table class="device-table">
+      <thead>
+        <tr>
+          <th>Device ID</th>
+          <th>Browser</th>
+          <th>OS</th>
+          <th>Login Time</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of devices" [class.active-session]="device.currentSession">
+          <td>{{ device.deviceId }}</td>
+          <td>
+            <img [src]="getBrowserIcon(device.browser)" class="browser-icon" alt="browser" />
+            {{ device.browser }}
+          </td>
+          <td>{{ device.operatingSystem }}</td>
+          <td>{{ device.loginTime | date:'short' }}</td>
+          <td *ngIf="!device.currentSession">
+            <div><strong>Access:</strong> {{ device.accessToken }}</div>
+            <div><strong>Refresh:</strong> {{ device.refreshToken }}</div>
+            <button (click)="logoutByDeviceId(device)">
+              Logout
+            </button>
+          </td>
+          <td *ngIf="device.currentSession">
+            <div><strong>Access:</strong> {{ device.accessToken }}</div>
+            <div><strong>Refresh:</strong> {{ device.refreshToken }}</div>
+            Current Browser</td>
+        </tr>
+      </tbody>
+    </table>
+    
+
+
+
   </div>

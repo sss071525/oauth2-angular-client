@@ -1,4 +1,6 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -9,7 +11,7 @@ export class DeviceInfoService {
   private readonly DEVICE_ID_KEY = 'device_id';
 
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getDeviceMetadata(): DeviceMetadata {
     const deviceId = this.getOrCreateDeviceId();
@@ -60,6 +62,36 @@ export class DeviceInfoService {
 
     return 'Unknown';
   }
+
+  // Function to get the access token (Assume it's stored in localStorage or a service)
+  private getAccessToken(): string {
+    const storedData = localStorage.getItem('userData');
+    if (storedData) {
+        let m= JSON.parse(storedData);
+        return m['access_token'];
+    }else{
+      return '';
+    }
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json',
+    });
+  }
+
+  getDevices(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8080/api/devices', {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  logoutDevice(authId: string): Observable<any> {
+    return this.http.delete(`http://localhost:8080/api/devices/${authId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }
 
 export interface DeviceMetadata {
@@ -69,5 +101,7 @@ export interface DeviceMetadata {
   deviceType: string;
   operatingSystem: string;
 }
+
+
 
 
