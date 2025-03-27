@@ -42,6 +42,10 @@ export class DashboardComponent implements OnInit {
   }
 
   getBrowserIcon(browser: string): string {
+    if (!browser) {
+        return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/internetexplorer.svg'; // Default icon if no browser name
+    }
+  
     const lower = browser.toLowerCase();
   
     if (lower.includes('chrome')) return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/googlechrome.svg';
@@ -49,8 +53,10 @@ export class DashboardComponent implements OnInit {
     if (lower.includes('edge')) return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/microsoftedge.svg';
     if (lower.includes('safari')) return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/safari.svg';
     if (lower.includes('brave')) return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/brave.svg';
+  
+    // Default icon if none of the conditions match
     return 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/internetexplorer.svg';
-  }
+}
   
     
 }
