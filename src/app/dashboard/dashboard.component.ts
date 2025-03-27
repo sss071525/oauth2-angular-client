@@ -15,7 +15,6 @@ export class DashboardComponent implements OnInit {
     const storedData = localStorage.getItem('userData');
     if (storedData) {
       this.userData = JSON.parse(storedData);
-      console.log(this.userData); // Parse the stored JSON data
     }
   }
 

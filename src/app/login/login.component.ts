@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit {
 
 constructor(private authService: AuthService) {}
   ngOnInit(): void {
+    this.authService.getGeoLocationDetails();
+    console.log(localStorage.getItem('geoLocationDetails'));
   }
 
   login() {

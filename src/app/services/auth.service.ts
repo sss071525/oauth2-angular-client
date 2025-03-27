@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { PkceService } from './pkce.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { DeviceInfoService } from './device-info.service';
 
 
 @Injectable({
@@ -18,7 +19,7 @@ export class AuthService {
   private clientId = 'public-client';
   private customLoginApiUrl = 'http://localhost:8080/auth/token'; // ✅ Custom Login API
   codeVerifier = '';
-  constructor(private http: HttpClient, private router: Router,private pkceService:PkceService) {}
+  constructor(private http: HttpClient, private router: Router,private pkceService:PkceService,private deviceInfoService:DeviceInfoService) {}
 
   // ✅ Authenticate User via Custom API
   async login(username: string, password: string) {
@@ -40,15 +41,15 @@ export class AuthService {
     this.codeVerifier = this.pkceService.generateCodeVerifier();
     localStorage.setItem('pkce_code_verifier', this.codeVerifier); // 👈 store before redirect
     const codeChallenge = await this.pkceService.generateCodeChallenge(this.codeVerifier);
+  
+
     const params = new HttpParams()
       .set('response_type', 'code')
       .set('client_id', this.clientId)
       .set('redirect_uri', this.redirectUri)
       .set('code_challenge', codeChallenge)
       .set('code_challenge_method', 'S256')
-      .set('scope', 'openid profile email') // Add required scopes
-      .set('device_id', 'My Own Laptop'); // 👈 custom param
-
+      .set('scope', 'openid profile email') 
     const authUrl = `${this.authorizationEndpoint}?${params.toString()}`;
     window.location.href = authUrl; // Redirect to the authorization server
   }
@@ -69,6 +70,18 @@ export class AuthService {
       }
     });
   }
+
+  getGeoLocationDetails(){
+    const locationurl = 'https://pro.ip-api.com/json/?key=7bvBGuqMHI5QTtq';
+    this.http.get(locationurl).subscribe({
+      next: (response) => {
+        localStorage.setItem('geoLocationDetails', JSON.stringify(response));
+      },
+      error: err => {
+        console.error('Logout failed:', err);
+      }
+    });
+}
   
 
   // ✅ Check if User is Logged In
@@ -83,15 +96,35 @@ export class AuthService {
       return;
     }
     localStorage.removeItem('pkce_code_verifier');
+    const geoLocationDetails = localStorage.getItem('geoLocationDetails');
+    let parsedGeoLocationDetails;
+    if (geoLocationDetails) {
+       parsedGeoLocationDetails = JSON.parse(geoLocationDetails);
+    }
+    const metadata = this.deviceInfoService.getDeviceMetadata();
+
+    console.log('Device Info:', metadata);
     const body = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('client_id', this.clientId)
       .set('redirect_uri', this.redirectUri)
       .set('code', code)
       .set('code_verifier', codeVerifier)
-      .set('device_location', 'Hyderabad')
-      .set('device_id', 'Sravan HP Laptop'); // 👈 custom param
-    this.http.post<any>(this.tokenEndpoint, body.toString(), {
+      .set('device_id', 'Sravan HP Laptop')
+      .set('device_type', metadata.deviceType)
+      .set('ip_address', parsedGeoLocationDetails['query'])
+      .set('internet_service_provider', parsedGeoLocationDetails['isp'])
+      .set('network_organization', parsedGeoLocationDetails['org'])
+      .set('city', parsedGeoLocationDetails['city'])
+      .set('region_name', parsedGeoLocationDetails['regionName'])
+      .set('country', parsedGeoLocationDetails['country'])
+      .set('timezone', parsedGeoLocationDetails['timezone'])
+      .set('zip', parsedGeoLocationDetails['zip'])
+      .set('user_agent', metadata.userAgent)
+      .set('browser', metadata.browser)
+      .set('operating_system', metadata.operatingSystem);
+
+      this.http.post<any>(this.tokenEndpoint, body.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).subscribe({
       next: (response) => {
