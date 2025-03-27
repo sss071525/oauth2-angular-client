@@ -31,15 +31,11 @@
           <td>{{ device.operatingSystem }}</td>
           <td>{{ device.loginTime | date:'short' }}</td>
           <td *ngIf="!device.currentSession">
-            <div><strong>Access:</strong> {{ device.accessToken }}</div>
-            <div><strong>Refresh:</strong> {{ device.refreshToken }}</div>
             <button (click)="logoutByDeviceId(device)">
               Logout
             </button>
           </td>
           <td *ngIf="device.currentSession">
-            <div><strong>Access:</strong> {{ device.accessToken }}</div>
-            <div><strong>Refresh:</strong> {{ device.refreshToken }}</div>
             Current Browser</td>
         </tr>
       </tbody>
