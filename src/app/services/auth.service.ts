@@ -110,7 +110,7 @@ export class AuthService {
       .set('redirect_uri', this.redirectUri)
       .set('code', code)
       .set('code_verifier', codeVerifier)
-      .set('device_id', 'Sravan HP Laptop')
+      .set('device_id', metadata.deviceId)
       .set('device_type', metadata.deviceType)
       .set('ip_address', parsedGeoLocationDetails['query'])
       .set('internet_service_provider', parsedGeoLocationDetails['isp'])

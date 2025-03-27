@@ -1,18 +1,24 @@
 import { Injectable } from '@angular/core';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DeviceInfoService {
 
+  private readonly DEVICE_ID_KEY = 'device_id';
+
+
   constructor() { }
 
   getDeviceMetadata(): DeviceMetadata {
+    const deviceId = this.getOrCreateDeviceId();
     const userAgent = navigator.userAgent;
     const browser = this.getBrowserName(userAgent);
     const deviceType = /Mobi|Android/i.test(userAgent) ? 'Mobile' : 'Laptop/Desktop';
     const operatingSystem = this.getOSName();
     return {
+      deviceId,
       userAgent,
       browser,
       deviceType,
@@ -33,6 +39,15 @@ export class DeviceInfoService {
     return 'Unknown';
   }
 
+  private getOrCreateDeviceId(): string {
+    let deviceId = localStorage.getItem(this.DEVICE_ID_KEY);
+    if (!deviceId) {
+      deviceId = uuidv4();
+      localStorage.setItem(this.DEVICE_ID_KEY, deviceId);
+    }
+    return deviceId;
+  }
+
   private getOSName() {
     const platform = navigator.platform.toLowerCase();
     const userAgent = navigator.userAgent.toLowerCase();
@@ -48,6 +63,7 @@ export class DeviceInfoService {
 }
 
 export interface DeviceMetadata {
+  deviceId: string;
   userAgent: string;
   browser: string;
   deviceType: string;
